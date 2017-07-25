@@ -61,6 +61,7 @@ class Server:
         return server
 
     def stop(self):
+        println('Stopping server')
         cherrypy.engine.exit()
 
     def wait_for(self):

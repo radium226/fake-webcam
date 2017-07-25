@@ -28,12 +28,27 @@
         });
       });
     </script>
+    <style>
+      #logo {
+        height: 64px;
+        width: 64px;
+      }
+    </style>
   </head>
   <body>
     <div class="container">
+      <!-- Fake Webcam -->
       <div class="page-header">
-        <h1>Fake Webcam</h1>
+        <div class="media">
+          <div class="media-left media-middle">
+            <img id="logo" class="media-object" src="static/webcam.png" />
+          </div>
+          <div class="media-body">
+            <h1 class="page">Fake Webcam</h1>
+          </div>
+        </div>
       </div>
+      
       <div class="row">
         <div class="col-lg-6">
           <div class="form-group">

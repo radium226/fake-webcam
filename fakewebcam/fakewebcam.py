@@ -119,6 +119,7 @@ class Player:
             if self._current_playing:
                 self._current_playing.stop()
             if dispatch(order) == State.STOP:
+                print("It's seems that we need to break")
                 break;
 
     def _do_play_image(self, params):
@@ -211,7 +212,7 @@ class Player:
         self._orders.put(Order.stop())
 
     def _do_stop(self, params):
-        print('Stopping! ')
+        print('Stopping player! ')
         return State.STOP
 
     def wait_for(self):
@@ -245,5 +246,4 @@ class FakeWebcam:
 
     def stop(self):
         self._player.stop()
-        sleep(1)
-        remove_module(self.MODULE_NAME)
+        self._module.remove()

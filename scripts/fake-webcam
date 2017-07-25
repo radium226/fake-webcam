@@ -2,8 +2,19 @@
 
 from fakewebcam import Server
 from fakewebcam import FakeWebcam
+import signal
 
 if __name__ == "__main__":
-  fake_webcam = FakeWebcam.start()
-  server = Server.start(fake_webcam, port=8080)
-  server.wait_for()
+    fake_webcam = FakeWebcam.start()
+    server = Server.start(fake_webcam, port=8080)
+
+    # We configure the signal handler
+    def signal_handler(signal, frame):
+        print(" --> Trying to stop server")
+        server.stop
+
+        print(" --> Trying to stop fake webcam")
+        fake_webcam.stop()
+    signal.signal(signal.SIGINT, signal_handler)
+
+    server.wait_for()
