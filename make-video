@@ -1,0 +1,18 @@
+#!/bin/bash
+
+create_images()
+{
+	convert "${1}" -resize "800x600" -background "white" -gravity "center" -extent "800x600" "./qr-code.png"
+	convert -size "800x600" xc:white "./blank.png"
+
+}
+
+#create_images "./qr-code.jpg"
+
+cat <<EOCAT >"./blank.concat"
+ffconcat version 1.0
+file '$( pwd )/blank.png'
+duration 5
+file '$( pwd )/blank.png'
+EOCAT
+ffmpeg -y -f concat -safe 0 -i "./blank.concat" -pix_fmt "yuv420p" "./blank.mp4"

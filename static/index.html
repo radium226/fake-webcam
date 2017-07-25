@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Fake Webcam</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script>
+      $(document).ready(function () {
+        $('#play').on('click', function () {
+          var data = $('#data').val();
+          var url = '/play';
+          var request = $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            contentType: "text/plain",
+            dataType: "text",
+            success: function (base64) {
+              $('#qrcode').attr('src', 'data:image/png;base64,' + base64);
+            },
+            error: function () {
+              alert('Error');
+            }
+          });
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <h1>Fake Webcam</h1>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="data">Data:</label>
+            <textarea class="form-control" rows="20" id="data"></textarea>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <label for="qrcode">QR Code:</label>
+          <img src="" id="qrcode" class="img-responsive center-block" />
+        </div>
+      </div>
+      <button type="button" class="btn btn-default btn-block" id="play">Play</button>
+    </div>
+  </body>
+</html>

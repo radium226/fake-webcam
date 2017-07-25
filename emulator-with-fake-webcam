@@ -1,0 +1,70 @@
+#!/bin/bash
+
+export REAL_DEVICE="/dev/video0"
+export FAKE_DEVICE="/dev/video0"
+
+export DURATION="5"
+export SIZE="800x600"
+
+export AVD="Nexus_5X_API_25"
+
+export VIDEO_FILE="./qr-code.mp4"
+
+sudo modprobe "v4l2loopback"
+
+record_webcam()
+{
+	declare video_fp="${1}"
+	ffmpeg \
+		-loglevel "quiet" \
+	  -y \
+		-f "v4l2" \
+	  -r "30" \
+	  -s "${SIZE}" \
+	  -i "${REAL_DEVICE}" \
+		-pix_fmt "yuv420p" \
+	  -vcodec "libx264" \
+		-ss "00:00:0.0" -t "${DURATION}" \
+		"${video_fp}"
+}
+
+fake_webcam()
+{
+	declare video_fp="${1}"
+	ffmpeg \
+		-loglevel "quiet" \
+		-re \
+		-f "lavfi" \
+		-i "movie=filename=${video_fp}:loop=0, setpts=N/(FRAME_RATE*TB)" \
+		-f "v4l2" "${FAKE_DEVICE}"
+}
+
+run_emulator()
+{
+	cd "${ANDROID_HOME}/tools"
+	./emulator @${AVD} -camera-back "webcam0"
+	cd -
+}
+
+main()
+{
+	declare action="${1:-"run"}"
+	shift
+	case "${action}" in
+		"run")
+				(
+					fake_webcam "${VIDEO_FILE}"
+				) &
+				declare ffmpeg_pid="${!}"
+
+				run_emulator
+				
+				pkill -TERM -P "${ffmpeg_pid}"
+			;;
+		"record")
+				record_webcam "${VIDEO_FILE}"
+			;;
+	esac
+}
+
+main "${@}"
