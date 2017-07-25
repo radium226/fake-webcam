@@ -9,9 +9,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script>
       $(document).ready(function () {
-        $('#play').on('click', function () {
-          var data = $('#data').val();
-          var url = '/play';
+        $('#qr-code-button').on('click', function () {
+          var data = $('#qr-code-data-input').val();
+          alert(data)
+          var url = '/qr_code';
           var request = $.ajax({
             url: url,
             type: 'POST',
@@ -19,11 +20,35 @@
             contentType: "text/plain",
             dataType: "text",
             success: function (base64) {
-              $('#qrcode').attr('src', 'data:image/png;base64,' + base64);
+              $('#qr-code').attr('src', 'data:image/png;base64,' + base64);
             },
             error: function () {
-              alert('Error');
+              alert('Failure...');
             }
+          });
+        });
+
+        $('#local-image-input').on('change', function(changeEvent) {
+          var files = changeEvent.target.files;
+          $('#local-image-button').on('click', function(clickEvent) {
+            var data = new FormData();
+            data.append("local_image_upload", files[0]);
+
+            $.ajax({
+              url: '/local_image',
+              type: 'POST',
+              data: data,
+              cache: false,
+              dataType: false,
+              processData: false,
+              contentType: false,
+              success: function(base64, textStatus, jqXHR) {
+                $('#local-image').attr('src', 'data:image/png;base64,' + base64);
+              },
+              error: function(jqXHR, textStatus, errorThrown) {
+                alert('Failure...');
+              }
+            });
           });
         });
       });
@@ -32,6 +57,24 @@
       #logo {
         height: 64px;
         width: 64px;
+      }
+
+      .tab-content {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+        height: 100%;
+        border-radius: 0px 0px 5px 5px;
+      }
+
+      .nav-tabs {
+        margin-bottom: 0;
+      }
+
+      #qr-code-data-input {
+        display: block;
+        width: 100%;
       }
     </style>
   </head>
@@ -48,20 +91,54 @@
           </div>
         </div>
       </div>
-      
-      <div class="row">
-        <div class="col-lg-6">
-          <div class="form-group">
-            <label for="data">Data:</label>
-            <textarea class="form-control" rows="20" id="data"></textarea>
+
+      <div>
+        <ul  class="nav nav-tabs">
+          <li class="active">
+            <a href="#local-image-tab" data-toggle="tab">Local Image</a>
+          </li>
+          <li>
+            <a href="#qr-code-tab" data-toggle="tab">QR Code</a>
+          </li>
+        </ul>
+
+        <div class="tab-content clearfix">
+          <!-- Local Image -->
+          <div class="tab-pane active" id="local-image-tab">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="local-image-input">File</label>
+                  <input type="file" name="local-image-input" id="local-image-input">
+                  <p class="help-block">Choose the file on your computer that you want to be played</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <img id="local-image" />
+              </div>
+            </div>
+            <button type="button" class="btn btn-default btn-block" id="local-image-button">Upload &amp; Play Local File Image</button>
+            </div>
+
+            <!-- QR Code -->
+            <div class="tab-pane" id="qr-code-tab">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="qr-code-data-input">QR Code</label>
+                    <textarea id="qr-code-data-input" rows="10"></textarea>
+                    <p class="help-block">Enter the data the QR Code should contain</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <img id="qr-code" />
+                </div>
+              </div>
+              <button type="button" class="btn btn-default btn-block" id="qr-code-button">Create &amp; Play QR Code</button>
+            </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <label for="qrcode">QR Code:</label>
-          <img src="" id="qrcode" class="img-responsive center-block" />
-        </div>
       </div>
-      <button type="button" class="btn btn-default btn-block" id="play">Play</button>
     </div>
   </body>
 </html>

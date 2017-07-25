@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # We configure the signal handler
     def signal_handler(signal, frame):
         print(" --> Trying to stop server")
-        server.stop
+        server.stop()
 
         print(" --> Trying to stop fake webcam")
         fake_webcam.stop()

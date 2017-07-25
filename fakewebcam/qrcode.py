@@ -12,5 +12,5 @@ class QRCode:
     def from_data(data):
         file_descriptor, file_path = mkstemp(suffix='.png')
         with os.fdopen(file_descriptor, 'wb') as f:
-            qrcode.make(file_path,image_factory=PymagingImage).save(f)
+            qrcode.make(data,image_factory=PymagingImage).save(f)
         return ImageMagick.from_file(file_path)

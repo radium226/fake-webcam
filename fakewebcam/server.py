@@ -10,6 +10,8 @@ from .fakewebcam import FakeWebcam
 from .imagemagick import Size
 import pkgutil
 import os
+from tempfile import mkstemp
+from .qrcode import QRCode
 
 class ServerTree:
 
@@ -18,11 +20,23 @@ class ServerTree:
 
     @cherrypy.expose()
     @cherrypy.tools.allow(methods=['POST'])
-    def play(self):
+    def qr_code(self):
         data = cherrypy.request.body.read().decode('utf-8')
         base64_content = base64.b64encode(QRCode.from_data(data).open().read())
         self._fake_webcam.play_image(QRCode.from_data(data).extent(Size(800, 600)).save_as(temp=True), duration=2)
         return base64_content
+
+    @cherrypy.expose()
+    #@cherrypy.tools.allow(methods=['POST'])
+    def local_image(self, local_image_upload):
+        local_image_content = local_image_upload.file.read()
+
+        file_descriptor, file_path = mkstemp(suffix=".png")
+        with os.fdopen(file_descriptor, 'wb') as file_stream:
+            file_stream.write(local_image_content)
+        self._fake_webcam.play_image(file_path, duration=2)
+        local_image_base64 = base64.b64encode(local_image_content)
+        return local_image_base64
 
     @cherrypy.expose()
     @cherrypy.tools.allow(methods=['GET'])
@@ -61,7 +75,7 @@ class Server:
         return server
 
     def stop(self):
-        println('Stopping server')
+        print('Stopping server')
         cherrypy.engine.exit()
 
     def wait_for(self):

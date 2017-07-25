@@ -246,4 +246,7 @@ class FakeWebcam:
 
     def stop(self):
         self._player.stop()
-        self._module.remove()
+        try:
+            self._module.remove()
+        except:
+            pass
