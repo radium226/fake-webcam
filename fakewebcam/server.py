@@ -6,10 +6,10 @@ import base64
 import qrcode
 from qrcode.image.pure import PymagingImage
 import io
-from fakewebcam import FakeWebcam
-from imagemagick import Size
-
-from qrcode2 import QRCode
+from .fakewebcam import FakeWebcam
+from .imagemagick import Size
+import pkgutil
+import os
 
 class ServerTree:
 
@@ -27,9 +27,11 @@ class ServerTree:
     @cherrypy.expose()
     @cherrypy.tools.allow(methods=['GET'])
     def index(self, *args, **kwargs):
-        return open('./static/index.html')
+        return pkgutil.get_data("fakewebcam", "data/index.html")
 
 class Server:
+
+    STATIC_FOLDER_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/static")
 
     def __init__(self, fake_webcam):
         self._fake_webcam = fake_webcam
@@ -44,7 +46,12 @@ class Server:
             "server.socket_port": port
         })
 
-        cherrypy.tree.mount(ServerTree(self._fake_webcam), '/')
+        cherrypy.tree.mount(ServerTree(self._fake_webcam), "/", config={
+            "/static": {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': self.STATIC_FOLDER_PATH,
+            }
+        })
         cherrypy.engine.start()
 
     @classmethod

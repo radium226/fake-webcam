@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
 
+from fakewebcam import Server
+from fakewebcam import FakeWebcam
+
 if __name__ == "__main__":
-  print("Fake Webcam")
+  fake_webcam = FakeWebcam.start()
+  server = Server.start(fake_webcam, port=8080)
+  server.wait_for()

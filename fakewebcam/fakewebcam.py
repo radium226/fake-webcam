@@ -4,7 +4,6 @@ import subprocess as sp
 import threading as t
 from time import sleep
 from tempfile import mkstemp
-import imagemagick as im
 import qrcode as qr
 from qrcode.image.pure import PymagingImage
 import threading
@@ -12,13 +11,15 @@ import subprocess
 import os
 import io
 
-from qrcode2 import QRCode
+import pkgutil as pu
 
 import collections as c
-
 from queue import Queue
+from .imagemagick import Size
+import sys
+from .common import ensure_file_exists_in_path
 
-from imagemagick import Size
+ensure_file_exists_in_path("ffmpeg")
 
 class Module:
 
@@ -95,7 +96,7 @@ class Playing:
 
 class Player:
 
-    BLANK_VIDEO_FILE_PATH = './blank.png'
+    BLANK_VIDEO_FILE_PATH = os.path.join(os.path.dirname(sys.modules["fakewebcam"].__file__), "data/blank.png") #pu.get_data("fakewebcam", "static/blank.png")
     SIZE = Size(800, 600)
 
     def __init__(self, dev_path):
@@ -132,6 +133,7 @@ class Player:
 
         ffmpeg_base_command = [
             'ffmpeg',
+            '-loglevel', 'quiet',
             '-re',
             '-loop', '1',
             '-i', file_path,
@@ -168,6 +170,7 @@ class Player:
 
         ffmpeg_command = [
             'ffmpeg',
+                '-loglevel', 'quiet',
                 '-re',
                 '-i', file_path,
                 '-vf', 'scale=iw*min(%(width)s/iw\,%(height)s/ih):ih*min(%(width)s/iw\,%(height)s/ih),pad=%(width)s:%(height)s:(%(width)s-iw)/2:(%(height)s-ih)/2' % { 'width': self.SIZE.width, 'height': self.SIZE.height },
