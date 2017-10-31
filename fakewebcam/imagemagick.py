@@ -38,6 +38,11 @@ class ImageMagick:
             '-extent', str(size)
         ]))
 
+    def resize(self, size):
+        return ImageMagick(self._convert([
+            '-resize', str(size)
+        ]))
+
     def _format(self, name='png'):
         return ImageMagick(self._convert([
             '-format', name

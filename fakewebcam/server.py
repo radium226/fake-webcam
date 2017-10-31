@@ -23,7 +23,8 @@ class ServerTree:
     def qr_code(self):
         data = cherrypy.request.body.read().decode('utf-8')
         base64_content = base64.b64encode(QRCode.from_data(data).open().read())
-        self._fake_webcam.play_image(QRCode.from_data(data).extent(Size(800, 600)).save_as(temp=True), duration=2)
+        # convert image.png -resize 100x100 -gravity center -background "rgb(255,0,255)" -extent 100x100 out.png
+        self._fake_webcam.play_image(QRCode.from_data(data).resize(Size(400, 400)).extent(Size(800, 600)).save_as(temp=True), duration=2)
         return base64_content
 
     @cherrypy.expose()
