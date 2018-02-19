@@ -12,6 +12,7 @@ import pkgutil
 import os
 from tempfile import mkstemp
 from .qrcode import QRCode
+from .imagemagick import ImageMagick
 
 class ServerTree:
 
@@ -35,7 +36,7 @@ class ServerTree:
         file_descriptor, file_path = mkstemp(suffix=".png")
         with os.fdopen(file_descriptor, 'wb') as file_stream:
             file_stream.write(local_image_content)
-        self._fake_webcam.play_image(file_path, duration=2)
+        self._fake_webcam.play_image(ImageMagick.from_file(file_path).resize(Size(400, 400)).extent(Size(800, 600)).save_as(temp=True), duration=2)
         local_image_base64 = base64.b64encode(local_image_content)
         return local_image_base64
 
