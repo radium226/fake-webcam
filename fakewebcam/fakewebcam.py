@@ -124,12 +124,12 @@ class Player:
 
     def _do_play_image(self, params):
         (file_path, duration) = params
-        print(" --> Playing " + file_path + "(duration=" + str(duration) + ")")
+        #print(" --> Playing " + file_path + "(duration=" + str(duration) + ")")
 
         options = ["--loop"] if duration == 0 else ["--duration", str(duration)]
 
         def on_finished_callback():
-            print("Calling callback of " + file_path)
+            #print("Calling callback of " + file_path)
             self._play_blank_image()
 
         ffmpeg_base_command = [
