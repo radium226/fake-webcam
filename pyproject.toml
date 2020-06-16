@@ -8,6 +8,9 @@ authors = ["Adrien"]
 python = "^3.8"
 pyudev = "^0.22.0"
 numpy = "^1.18.5"
+opencv-python = "^4.2.0"
+dbus-python = "^1.2.16"
+mediainfo = "^0.0.8"
 
 [tool.poetry.dev-dependencies]
 
