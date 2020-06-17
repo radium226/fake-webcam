@@ -11,6 +11,7 @@ numpy = "^1.18.5"
 opencv-python = "^4.2.0"
 dbus-python = "^1.2.16"
 mediainfo = "^0.0.8"
+rx = "^3.1.0"
 
 [tool.poetry.dev-dependencies]
 
