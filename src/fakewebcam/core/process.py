@@ -4,6 +4,7 @@ from rx.core import Observer
 from rx import create
 from threading import Thread, Lock
 from functools import partial
+from rx.disposable import Disposable, CompositeDisposable
 
 
 def stdin(command):
@@ -13,20 +14,24 @@ def stdin(command):
             process = Popen(command, stdin=PIPE)
             print("Process created! ")
 
+            composite_disposable = CompositeDisposable()
+
             def thread_target():
                 process.wait()
                 observer.on_next(process.poll())
                 observer.on_completed()
 
             def on_completed():
-                print("[stdin] Killing process...")
+                print("[stdin] on_completed")
+                print(f"[stdin/command={command}] Killing process...")
                 process.kill()
-                print("[stdin] Process killed! ")
+                print(f"[stdin/command={command}] Process killed! ")
             
             thread = Thread(target=thread_target)
             thread.start()
 
             def on_next(data):
+                print("[stdin] on_next")
                 if process.poll() is None:
                     print(f"Writing data (poll={process.poll()})...")
                     try:
@@ -35,13 +40,20 @@ def stdin(command):
                     except BrokenPipeError:
                         print("Data not written :(")
                 else:
-                    print("WE SHOULD NOOOOT BEEE HEEERE")                        
-            def on_error(e):
-                print(e)
-                observer.on_error(e)
+                    print("[stdin] We're here! ")
+                    #on_completed()
 
-            disposable = observable.subscribe(on_next, on_error, on_completed, scheduler)
-            return disposable
+            def on_error(error):
+                print("[stdin] on_error")
+                print(error)
+
+            def on_dispose():
+                print("[stdin] on_dispose")
+                process.kill()
+
+            composite_disposable.add(Disposable(on_dispose))
+            composite_disposable.add(observable.subscribe(on_next, on_error, on_completed, scheduler))
+            return composite_disposable
         return rx.create(subscribe)
     return operator
 
@@ -64,6 +76,7 @@ def stdout(command, buffer_size=1024):
             process.kill()
             print(f"[stdout command={command}] Process killed! ")
             process.wait()
+            observer.on_completed()
             #thread.join()
 
         return on_dispose

@@ -10,6 +10,7 @@ def from_queue(queue):
     def on_subscribe(observer, schedule = None):
         def thread_target():
             for item in iter(queue.get, None):
+                print(item)
                 observer.on_next(item)
             observer.on_completed()
             print("We are here")
