@@ -7,14 +7,21 @@ from .video import Video
 from .camera import Camera
 from .size import Size
 
+from .probe import probe
+
+from .player import player
+from rx import operators as op
 
 if __name__ == "__main__":
-    with Camera("/dev/video0", size=Size(640, 480), format="yuyv422", frame_rate=30) as camera, FakeCamera(camera) as fake_camera:
+    #print(probe("./output.mp4"))
+    with Camera("/dev/video0", size=Size(320, 240)) as camera, FakeCamera(camera) as fake_camera:
+        #print(fake_camera.device_path)
         sleep(5)
-        fake_camera.source = Video("./output.mp4")
-        sleep(30)
-
-
+        recording = camera.record("./test.mp4")
+        sleep(10)
+        recording.stop()
+        fake_camera.source = recording.video.reverse.loop
+        sleep(60)
 
     #e2e()
 

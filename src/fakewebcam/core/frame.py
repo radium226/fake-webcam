@@ -5,7 +5,6 @@ import rx.operators as op
 
 def resize(size):
     def _resize(frame):
-        print(frame.shape)
         return cv2.resize(frame, dsize=(size.width, size.height))
 
     def subscribe(source):

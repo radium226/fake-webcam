@@ -6,7 +6,7 @@ import rx.operators as op
 def player(size):
     def subscribe(source):
         return source.pipe(
-            #op.map(lambda frame: frame.tobytes()), 
+            op.map(lambda frame: frame.tobytes()), 
             stdin([
                 "ffplay", 
                 "-loglevel", "quiet",
