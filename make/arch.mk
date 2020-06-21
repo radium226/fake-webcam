@@ -21,5 +21,5 @@ arch-install: arch-package
 
 .PHONY: arch-clean
 arch-clean:
-	find "packages/arch" -name "*.tar.gz" -o -name "*.pkg.tar.xz" -print | xargs -I {} rm -f "{}"
+	find "packages/arch" \( -name "*.tar.gz" -o -name "*.pkg.tar.xz" \) -print | xargs -I {} rm -f "{}"
 	
