@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from .process import stdout
-from MediaInfo import MediaInfo
 from .size import Size
 
 import numpy as np

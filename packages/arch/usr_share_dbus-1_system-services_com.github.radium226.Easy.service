@@ -1,0 +1,4 @@
+[D-BUS Service]
+User=root
+Name=com.github.radium226.Easy
+Exec=/usr/bin/easyd --system

@@ -35,8 +35,8 @@ class FakeWebcamObject(Object):
     @method(DBUS_INTERFACE, in_signature="n")
     def ShowLoop(self, duration):
         def thread_target():
-            file_path = Path(mkstemp(suffix=".mp4", prefix="fake-webcam"))
-            recording = self._camera.record(file_path)
+            _, file_path = mkstemp(suffix=".mp4", prefix="fake-webcam")
+            recording = self._camera.record(Path(file_path))
             sleep(duration)
             recording.stop()
             self._fake_camera.source = recording.video.reverse.loop

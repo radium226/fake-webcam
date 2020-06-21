@@ -1,0 +1,50 @@
+pkgname="fake-webcam"
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Fake Webcam"
+arch=('any')
+provides=('easy')
+source=(
+    "fakewebcam-${pkgver}.tar.gz"
+    "usr_share_dbus-1_services_com.github.radium226.FakeWebcam.service"
+)
+sha256sums=(
+    "SKIP"
+    "SKIP"
+)
+
+depends=(
+    "python"
+    "python-dbus"
+    "python-pyudev"
+    "python-numpy"
+    "python-rx"
+    "python-gobject"
+    "python-click"
+    "opencv"
+)
+
+makedepends=(
+    "python-setuptools"
+    "python-dephell"
+)
+
+prepare()
+{
+    cd "fakewebcam-${pkgver}"
+    dephell deps convert
+}
+
+build() {
+    cd "fakewebcam-${pkgver}"
+    python setup.py build
+}
+
+package() {
+    cd "fakewebcam-${pkgver}"
+    python setup.py install --root="${pkgdir}" --optimize=1
+
+    install -Dm0644 \
+        "${srcdir}/usr_share_dbus-1_services_com.github.radium226.FakeWebcam.service" \
+        "${pkgdir}/usr/share/dbus-1/services/com.github.radium226.FakeWebcam.service"
+}

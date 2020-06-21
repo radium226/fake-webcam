@@ -14,7 +14,6 @@ class Effect:
     @classmethod
     def circle(self):
         def effect(frame):
-            print("coucou")
             return cv2.circle(frame, (100, 100), 10, (255, 0, 0), 2)
         return effect
 
