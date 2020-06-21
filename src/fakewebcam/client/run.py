@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from click import group, command, option, argument
+from click import group, command, option, argument, INT
 from pathlib import Path
 
 from dbus import SessionBus
@@ -58,6 +58,22 @@ def video(file_path):
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
     remote_object.ShowVideo(file_path)
 
+@run.group()
+def effect():
+    pass
+
+@effect.command()
+@option("--ratio", "ratio", type=INT, default=30)
+def pixelate(ratio):
+    bus = SessionBus()
+    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
+    remote_object.EffectPixelate(ratio)
+
+@effect.command()
+def none():
+    bus = SessionBus()
+    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
+    remote_object.EffectNone()
 
 
 '''

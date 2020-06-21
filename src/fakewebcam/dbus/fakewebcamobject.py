@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ..core import Camera, FakeCamera, Video
+from ..core import Camera, FakeCamera, Video, Effect
 
 from dbus.service import Object, method
 
@@ -48,6 +48,15 @@ class FakeWebcamObject(Object):
         video = Video(file_path)
         self._fake_camera.source = video
     
+    @method(DBUS_INTERFACE)
+    def EffectNone(self):
+        self._fake_camera.effect = Effect.identity()
+
+    @method(DBUS_INTERFACE, in_signature="n")
+    def EffectPixelate(self, ratio):
+        self._fake_camera.effect = Effect.pixelate(ratio)
+
+
     @method(DBUS_INTERFACE)
     def Stop(self):
         self._fake_camera.stop()

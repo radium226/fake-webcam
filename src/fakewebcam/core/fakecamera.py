@@ -2,7 +2,7 @@
 
 from .fromqueue import from_queue
 
-from rx.operators import publish, switch_latest, concat
+from rx.operators import publish, switch_latest, concat, with_latest_from, map as rx_map
 
 from queue import Queue
 
@@ -19,6 +19,8 @@ from pyudev import Context
 from pathlib import Path
 
 from time import sleep
+
+from .effect import Effect
 
 class FakeCamera:
 
@@ -37,6 +39,15 @@ class FakeCamera:
         self._source = source
 
     source = property(_get_source, _set_source)
+
+    def _get_effect(self):
+        return None
+
+    def _set_effect(self, effect):
+        self._effect = effect
+        self._effect_queue.put(effect)
+
+    effect = property(_get_effect, _set_effect)
 
     @property
     def size(self):
@@ -77,10 +88,14 @@ class FakeCamera:
             str(self.device_path)
         ])
         self._queue = Queue()
+        self._effect_queue = Queue()
         self._disposable = from_queue(self._queue).pipe(
             switch_latest(), 
+            with_latest_from(from_queue(self._effect_queue)), 
+            rx_map(lambda tuple: tuple[1](tuple[0])),
             sink
         ).subscribe()
+        self._effect_queue.put(Effect.circle())
         self._queue.put(self._source_fallback.frames)
 
     def stop(self):
