@@ -25,10 +25,15 @@ class Camera():
         return self._frames
 
     def record(self, file_path):
-        print("[Camera] Starting to record... ")
         recording = Recording(self, file_path)
-        recording.start()
-        return recording
+        if not self._frames:
+            with self:
+                recording.start()
+                return recording
+        else:
+            recording.start()
+            return recording
+            
 
     @property
     def frame_rate(self):

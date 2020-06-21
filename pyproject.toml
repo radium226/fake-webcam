@@ -8,15 +8,19 @@ authors = ["Adrien"]
 python = "^3.6"
 pyudev = "^0.22.0"
 numpy = "^1.18.5"
-#opencv-python = "^4.2.0"
+opencv-python = "^4.2.0"
 dbus-python = "^1.2.16"
 mediainfo = "^0.0.8"
 rx = "^3.1.0"
+pygobject = "^3.36.1"
+click = "^7.1.2"
 
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
 fake-webcam = "fakewebcam.client:run"
+fake-webcamd = "fakewebcam.server:run"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

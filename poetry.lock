@@ -1,5 +1,13 @@
 [[package]]
 category = "main"
+description = "Composable command line interface toolkit"
+name = "click"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "7.1.2"
+
+[[package]]
+category = "main"
 description = "Python bindings for libdbus"
 name = "dbus-python"
 optional = false
@@ -35,6 +43,25 @@ numpy = ">=1.11.1"
 
 [[package]]
 category = "main"
+description = "Python interface for cairo"
+name = "pycairo"
+optional = false
+python-versions = ">=3.5, <4"
+version = "1.19.1"
+
+[[package]]
+category = "main"
+description = "Python bindings for GObject Introspection"
+name = "pygobject"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+version = "3.36.1"
+
+[package.dependencies]
+pycairo = ">=1.11.1"
+
+[[package]]
+category = "main"
 description = "A libudev binding"
 name = "pyudev"
 optional = false
@@ -61,10 +88,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "1.15.0"
 
 [metadata]
-content-hash = "8fba938f81a837a595cc4d59a9be1e2303200916021132be2f67b9de8b7a5990"
-python-versions = "^3.8"
+content-hash = "94ef818630eb724a3c34af73ceda757ea813583dcfef7dcb917d38a80b74b308"
+python-versions = "^3.6"
 
 [metadata.files]
+click = [
+    {file = "click-7.1.2-py2.py3-none-any.whl", hash = "sha256:dacca89f4bfadd5de3d7489b7c8a566eee0d3676333fbb50030263894c38c0dc"},
+    {file = "click-7.1.2.tar.gz", hash = "sha256:d2b5255c7c6349bc1bd1e59e08cd12acbbd63ce649f2588755783aa94dfb6b1a"},
+]
 dbus-python = [
     {file = "dbus-python-1.2.16.tar.gz", hash = "sha256:11238f1d86c995d8aed2e22f04a1e3779f0d70e587caffeab4857f3c662ed5a4"},
 ]
@@ -115,6 +146,12 @@ opencv-python = [
     {file = "opencv_python-4.2.0.34-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:0e7c91718351449877c2d4141abd64eee1f9c8701bcfaf4e8627bd023e303368"},
     {file = "opencv_python-4.2.0.34-cp38-cp38-win32.whl", hash = "sha256:1ab92d807427641ec45d28d5907426aa06b4ffd19c5b794729c74d91cd95090e"},
     {file = "opencv_python-4.2.0.34-cp38-cp38-win_amd64.whl", hash = "sha256:e2206bb8c17c0f212f1f356d82d72dd090ff4651994034416da9bf0c29732825"},
+]
+pycairo = [
+    {file = "pycairo-1.19.1.tar.gz", hash = "sha256:2c143183280feb67f5beb4e543fd49990c28e7df427301ede04fc550d3562e84"},
+]
+pygobject = [
+    {file = "PyGObject-3.36.1.tar.gz", hash = "sha256:012a589aec687bfa809a1ff9f5cd775dc7f6fcec1a6bc7fe88e1002a68f8ba34"},
 ]
 pyudev = [
     {file = "pyudev-0.22.0.tar.gz", hash = "sha256:69bb1beb7ac52855b6d1b9fe909eefb0017f38d917cba9939602c6880035b276"},
