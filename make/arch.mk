@@ -8,6 +8,7 @@ packages/arch/fake-webcam-$(VERSION)-1-any.pkg.tar.xz: packages/arch/fakewebcam-
 		--syncdeps \
 		--cleanbuild \
 		--clean \
+		--noconfirm \
 		--force
 
 .PHONY: arch-package
