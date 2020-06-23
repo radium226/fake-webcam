@@ -22,6 +22,8 @@ depends=(
     "python-gobject"
     "python-click"
     "opencv"
+    "ffmpeg"
+    "v4l2loopback-dkms"
 )
 
 makedepends=(

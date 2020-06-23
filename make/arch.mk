@@ -4,12 +4,13 @@ packages/arch/fakewebcam-$(VERSION).tar.gz: dist/fakewebcam-$(VERSION).tar.gz
 
 packages/arch/fake-webcam-$(VERSION)-1-any.pkg.tar.xz: packages/arch/fakewebcam-$(VERSION).tar.gz
 	cd "packages/arch"
-	makepkg \
-		--syncdeps \
-		--cleanbuild \
-		--clean \
-		--noconfirm \
-		--force
+	PACMAN=yay \
+		makepkg \
+			--syncdeps \
+			--cleanbuild \
+			--clean \
+			--noconfirm \
+			--force
 
 .PHONY: arch-package
 arch-package: packages/arch/fake-webcam-$(VERSION)-1-any.pkg.tar.xz
