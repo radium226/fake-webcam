@@ -15,8 +15,7 @@ from pathlib import Path
 
 
 @command()
-@option("--device", "device_path", default="/dev/video0")
-def run(device_path):
+def run():
     mainloop = GLib.MainLoop()
     DBusGMainLoop(set_as_default=True)
     

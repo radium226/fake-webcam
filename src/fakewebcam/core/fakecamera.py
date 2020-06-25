@@ -22,13 +22,14 @@ from time import sleep
 
 from .effect import Effect
 
+import cv2
+
 class FakeCamera:
 
-    def __init__(self, source_fallback, label="Fake Camera", dry=False):
+    def __init__(self, source_fallback, label="Fake Camera"):
         self._queue = None
         self._source_fallback = source_fallback
         self._source = source_fallback
-        self._dry = dry
         self._label = label
 
     def _get_source(self):
@@ -70,11 +71,22 @@ class FakeCamera:
     def _uninstall_module(self):
         sp.run(["sudo", "modprobe", "--remove", "v4l2loopback"])
 
-    def start(self):
+    def start(self, dry_run=False):
+        from .image import Image
+        from .size import Size
+
+        def _combine_image(frame, image):
+            x = y = 50
+            frame_copy = frame.copy()
+            frame_copy[x:y+image.shape[0], x:x+image.shape[1]] = image
+            return frame_copy
+        def combine_image(image):
+            return rx_map(lambda frame: _combine_image(frame, image))
+
         self._install_module()
         print("FRAME_RATE = " + str(self._source_fallback.frame_rate))
         # FIXME: Handle non-dry
-        sink = player(self.size) if self._dry else stdin([
+        sink = player(self.size, self.source.frame_rate) if dry_run else stdin([
             "ffmpeg", 
             "-re", 
             "-f", "rawvideo",
@@ -91,8 +103,8 @@ class FakeCamera:
         self._effect_queue = Queue()
         self._disposable = from_queue(self._queue).pipe(
             switch_latest(), 
-            with_latest_from(from_queue(self._effect_queue)), 
-            rx_map(lambda tuple: tuple[1](tuple[0])),
+            #with_latest_from(from_queue(self._effect_queue)), 
+            combine_image(Image.load_svg(Path("image.svg"), size=Size(10, 10))),
             sink
         ).subscribe()
         self._effect_queue.put(Effect.circle())

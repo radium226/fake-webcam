@@ -18,10 +18,11 @@ def run():
 
 @run.command()
 @option("--device", "device_path", default=DEFAULT_DEVICE_PATH)
-def start(device_path):
+@option('--dry-run', "dry_run", is_flag=True)
+def start(device_path, dry_run):
     bus = SessionBus()
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.Start(device_path)
+    remote_object.Start(device_path, dry_run)
 
 @run.command()
 def stop():

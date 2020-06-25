@@ -21,12 +21,12 @@ class FakeWebcamObject(Object):
         self._fake_camera = None
         self._camera = None
 
-    @method(DBUS_INTERFACE, in_signature="s")
-    def Start(self, device_path):
+    @method(DBUS_INTERFACE, in_signature="sb")
+    def Start(self, device_path, dry_run):
         self._camera = Camera(device_path)
         self._fake_camera = FakeCamera(self._camera)
         self._camera.start()
-        self._fake_camera.start()
+        self._fake_camera.start(dry_run=dry_run)
 
     @method(DBUS_INTERFACE)
     def ShowFallback(self):

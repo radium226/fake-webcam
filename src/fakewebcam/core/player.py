@@ -3,8 +3,9 @@
 from .process import stdin
 import rx.operators as op
 
-def player(size):
+def player(size, frame_rate):
     def subscribe(source):
+        print("We are here! ")
         return source.pipe(
             op.map(lambda frame: frame.tobytes()), 
             stdin([
@@ -14,6 +15,7 @@ def player(size):
                 "-f", "rawvideo",
                 "-video_size", f"{size.width}x{size.height}",
                 "-pixel_format", "bgr24",
+                "-framerate", str(frame_rate), 
                 "-i", "-"
             ])
         )
