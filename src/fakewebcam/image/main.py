@@ -16,9 +16,30 @@ from easing_functions import *
 
 from ..core.player import player
 
+from ..core.process import stdin
+
+
+def writer(file_path, size, frame_rate):
+    return stdin([
+        "ffmpeg", 
+        "-y",
+        #"-loglevel", "quiet",
+        "-f", "rawvideo",
+        "-video_size", f"{size.width}x{size.height}",
+        "-r", str(frame_rate),
+        "-pixel_format", "bgr24",
+        "-i", "-", 
+        "-an",
+        "-codec:v", "libx264",
+        "-f", "mp4", 
+        str(file_path)
+    ])
 
 
 def overlay_transparent(background, overlay, x, y):
+    #print(overlay.shape)
+    #if overlay.shape[0] == 0 or overlay.shape[1] == 0:
+    #    return background
 
     background_width = background.shape[1]
     background_height = background.shape[0]
@@ -67,22 +88,22 @@ def main():
         return cv.imdecode(np.asarray(bytearray(png_bytes.read()), dtype=np.uint8), cv.IMREAD_UNCHANGED)
 
 
-    def solid(size, color=(255, 0, 0)):
+    def solid(size, color=(255, 0, 0), duration=None):
         solid_frame = np.zeros((size.width, size.height, 3), np.uint8)
         solid_frame[:] = color
-        return rx.repeat_value(solid_frame)
+        return rx.repeat_value(solid_frame, repeat_count=duration)
     
     size = Size(500, 500)
     frame_rate = 60
-    duration = 2
+    duration = 1.25
 
-    start_size = Size(10, 10)
+    start_size = Size(0, 0)
     end_size = Size(100, 100)
 
 
     def ease(factory, start, end, frame_rate, duration):
-        ease = factory(start=start, end=end, duration=frame_rate * duration + 1)
-        return rx.from_iterable(range(0, frame_rate * duration + 1)).pipe(ops.map(ease.ease))
+        ease = factory(start=start, end=end, duration=frame_rate * duration)
+        return rx.from_iterable(range(0, int(frame_rate * duration))).pipe(ops.map(ease.ease))
 
     def ease_size(factory, start_size, end_size, frame_rate, duration):
         heights = ease(factory, start=start_size.height, end=end_size.height, frame_rate=frame_rate, duration=duration)
@@ -93,6 +114,9 @@ def main():
 
     def combine(svg_bytes, sizes):
         def draw_overlay(frame, size):
+            if size == Size(0, 0):
+                return frame
+
             print(f"size={size}")
             svg_image = rasterize(svg_bytes, size)
             #print(svg_image)
@@ -112,8 +136,9 @@ def main():
 
     image_observable = solid(size).pipe(
         combine(svg_bytes, ease_size(BounceEaseOut, start_size, end_size, frame_rate, duration).pipe(ops.concat(ease_size(QuadEaseInOut, end_size, start_size, frame_rate, duration)))), 
-        player(size, frame_rate)
-        
+        #player(size, frame_rate)
+        ops.concat(solid(size, duration=100)),
+        writer(Path("./caca.mp4"), size, frame_rate),
     ).run()
     
     #size_observable.subscribe(lambda s: print(s))
