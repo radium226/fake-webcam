@@ -9,7 +9,9 @@ from tempfile import mkstemp
 from pathlib import Path
 from threading import Thread
 
-from ..effect import Effect, bouncing_image
+from ..effect import ImageOverlayEffect, GrayEffect, NoneEffect
+
+from pathlib import Path
 
 
 class FakeWebcamObject(Object):
@@ -54,20 +56,19 @@ class FakeWebcamObject(Object):
     def EffectNone(self):
         self._fake_camera.effect = Effect.identity()
 
-    @method(DBUS_INTERFACE, in_signature="n")
-    def EffectPixelate(self, ratio):
-        self._fake_camera.effect = Effect.pixelate(ratio)
-
     @method(DBUS_INTERFACE, in_signature="s")
-    def Effect(self, name):
-        effect = Effect.by_name(name)
-        self._fake_camera.effect = effect
+    def EffectImageOverlay(self, file_path):
+        self._fake_camera.effect = ImageOverlayEffect(Path(file_path))
+
+    @method(DBUS_INTERFACE)
+    def EffectGray(self):
+        self._fake_camera.effect = GrayEffect()
+
+    @method(DBUS_INTERFACE)
+    def EffectNone(self):
+        self._fake_camera.effect = NoneEffect()
 
     @method(DBUS_INTERFACE)
     def Stop(self):
         self._fake_camera.stop()
         self._camera.stop()
-
-    @method(DBUS_INTERFACE, in_signature="sb")
-    def Image(self, file_path, bounce):
-        self._fake_camera.effect = bouncing_image()

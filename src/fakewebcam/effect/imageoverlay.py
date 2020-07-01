@@ -5,6 +5,9 @@ from rx import operators as ops
 import rx
 from .draw import draw
 from .svg.core import load, rasterize
+from .draw import Figure
+from ..core.position import Position
+from ..core.size import Size
 
 
 class ImageOverlayEffect(Effect):
@@ -15,9 +18,12 @@ class ImageOverlayEffect(Effect):
         self._position = position
 
     def operator(self, frame_size, frame_rate):
-        figures = rx.repeat_value(Figure(image=rasterize(load(self._file_path), self._size), position=self._position))
+        size = self._size or Size(20, 20) #frame_size
+        position = self._position or Position(5, 5)
+        figure = Figure(image=rasterize(load(self._file_path), size), position=position)
+        figures = rx.repeat_value(figure)
         def _image_overlay(frames):
-            frames.pipe(draw(figures))
+            return frames.pipe(draw(figures))
 
         return _image_overlay
 

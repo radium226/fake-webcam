@@ -76,12 +76,28 @@ def video(file_path):
     remote_object.ShowVideo(file_path)
 
 
-@run.command()
-@argument("name")
-def effect(name):
+@run.group()
+def effect():
+    pass
+
+@effect.command()
+def gray():
     bus = SessionBus()
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.Effect(name)
+    remote_object.EffectGray()
+
+@effect.command()
+def none():
+    bus = SessionBus()
+    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
+    remote_object.EffectNone()
+
+@effect.command()
+@option("--file", "file_path", required=True)
+def image_overlay(file_path):
+    bus = SessionBus()
+    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
+    remote_object.EffectImageOverlay(file_path)
 
 
 @run.command()

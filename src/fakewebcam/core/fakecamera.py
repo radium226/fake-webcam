@@ -127,7 +127,7 @@ class FakeCamera:
 
         # Initial values
         print("[FakeCamera/start] Putting initial values... ")
-        self._effect_queue.put(ef.none(self.size, self.frame_rate))
+        self._effect_queue.put(ef.NoneEffect())
         self._source_queue.put(self._source_fallback.frames)
 
         # Source

@@ -2,7 +2,7 @@
 
 from io import BytesIO
 
-def load(file_path):
+def load(svg_file_path):
     svg_fileobj = BytesIO()
     with svg_file_path.open("rb") as fd:
         svg_fileobj.write(fd.read())
