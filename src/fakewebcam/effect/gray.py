@@ -10,7 +10,7 @@ from .effect import effect
 def gray():
     print("[effect/gray]")
     def _gray(color_frame):
-        print(f"[effect/gray] _gray({frame})")
+        print(f"[effect/gray] _gray({color_frame})")
         gray_frame = cv2.cvtColor(color_frame, cv2.COLOR_BGR2GRAY)
         return cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)
 

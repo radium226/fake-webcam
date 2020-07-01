@@ -4,6 +4,7 @@ from .fromqueue import from_queue
 
 from rx import operators as op
 from rx.operators import publish, switch_latest, concat, with_latest_from, map as rx_map
+from rx import operators as op
 
 from queue import Queue
 
@@ -26,6 +27,19 @@ import cv2
 from .. import effect as ef
 
 from rx import scheduler as sh
+
+def peek():
+    def _print(item):
+        print(f"[peek] {item}")
+        return item 
+        
+    def _peek(source):
+        return source.pipe(
+            op.map(_print)
+        )
+
+    return _peek
+
 
 class FakeCamera:
 
@@ -102,7 +116,7 @@ class FakeCamera:
         # Source
         print("[FakeCamera/start] Setting up source... ")
         source = from_queue(self._source_queue).pipe(
-            op.subscribe_on(sh.NewThreadScheduler())
+            op.subscribe_on(sh.NewThreadScheduler()),
             op.switch_latest(), 
             op.publish()
         )
@@ -110,7 +124,8 @@ class FakeCamera:
         # Effects (+ Sink)
         print("[FakeCamera/start] Setting up effects (+ sink)... ")
         self._effect_disposable = from_queue(self._effect_queue).pipe(
-            op.map(lambda effect: source.pipe(operator)), 
+            peek(),
+            op.map(lambda effect: source.pipe(effect)), 
             op.switch_latest(),
             sink,
         ).subscribe()
