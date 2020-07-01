@@ -63,7 +63,7 @@ class FakeCamera:
 
     def _set_effect(self, effect):
         self._effect = effect
-        self._effect_queue.put(effect(self.source.size, self.source.frame_rate))
+        self._effect_queue.put(effect)
 
     effect = property(_get_effect, _set_effect)
 
@@ -142,7 +142,7 @@ class FakeCamera:
         print("[FakeCamera/start] Setting up effects (+ sink)... ")
         self._effect_disposable = from_queue(self._effect_queue).pipe(
             peek(),
-            op.map(lambda effect: source.pipe(effect, op.concat(source))), 
+            op.map(lambda effect: source.pipe(effect.operator(self.source.size, self.source.frame_rate), op.concat(source))), 
             op.switch_latest(),
             sink,
         ).subscribe()

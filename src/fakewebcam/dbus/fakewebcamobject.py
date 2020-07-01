@@ -9,7 +9,7 @@ from tempfile import mkstemp
 from pathlib import Path
 from threading import Thread
 
-from ..effect import Effect
+from ..effect import Effect, bouncing_image
 
 
 class FakeWebcamObject(Object):
@@ -67,3 +67,7 @@ class FakeWebcamObject(Object):
     def Stop(self):
         self._fake_camera.stop()
         self._camera.stop()
+
+    @method(DBUS_INTERFACE, in_signature="sb")
+    def Image(self, file_path, bounce):
+        self._fake_camera.effect = bouncing_image()
