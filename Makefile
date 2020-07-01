@@ -25,3 +25,7 @@ clean: arch-clean
 
 .PHONY: install
 install: arch-install
+
+.PHONY: test
+test:
+	poetry run pytest -s

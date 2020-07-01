@@ -25,6 +25,8 @@ import cv2
 
 from .. import effect as ef
 
+from rx import scheduler as sh
+
 class FakeCamera:
 
     def __init__(self, source_fallback, label="Fake Camera"):
@@ -92,42 +94,37 @@ class FakeCamera:
         self._source_queue = Queue()
         self._effect_queue = Queue()
 
-        source = from_queue(self._source_queue).pipe(op.switch_latest(), op.publish())
-        source.connect()
-
+        # Initial values
+        print("[FakeCamera/start] Putting initial values... ")
         self._effect_queue.put(ef.none())
         self._source_queue.put(self._source_fallback.frames)
 
-
-
-        def switch_latest_operator(operators):
-
-            
-
-
-        self._disposable = from_queue(self._effect_queue).pipe(
-            effect(), 
+        # Source
+        print("[FakeCamera/start] Setting up source... ")
+        source = from_queue(self._source_queue).pipe(
+            op.subscribe_on(sh.NewThreadScheduler())
             op.switch_latest(), 
-            sink
+            op.publish()
+        )
+
+        # Effects (+ Sink)
+        print("[FakeCamera/start] Setting up effects (+ sink)... ")
+        self._effect_disposable = from_queue(self._effect_queue).pipe(
+            op.map(lambda effect: source.pipe(operator)), 
+            op.switch_latest(),
+            sink,
         ).subscribe()
 
-
-
-        #def effects(frames):
-        #    
-        #    return from_queue(self._effect_queue).pipe(
-        #        op.flat_map(lambda effect: frames.pipe(effect))
-        #    )
-       # 
-        
-        #self._disposable = sources.pipe(
-        #    effects, 
-        #    sink
-        #).subscribe()
+        print("[FakeCamera/start] Connecting source... ")
+        self._source_disposable = source.connect()
 
     def stop(self):
-        self._disposable.dispose()
+        self._effect_disposable.dispose()
+        self._source_disposable.dispose()
+
         self._source_queue = None
+        self._effect_queue = None
+        
         self._uninstall_module()
 
     def __enter__(self):
