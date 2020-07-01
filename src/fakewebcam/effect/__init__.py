@@ -4,3 +4,4 @@ from .effect import Effect
 
 from .none import none
 from .gray import gray
+from .bouncingimage import bouncing_image

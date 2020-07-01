@@ -9,6 +9,7 @@ import numpy as np
 from .recording import Recording
 from .probe import probe
 
+import cv2 as cv
 
 class Camera():
 
@@ -39,9 +40,14 @@ class Camera():
     def frame_rate(self):
         return self._probe.frame_rate
 
+    # FIXME: Deprecated (use frame_size)
     @property
     def size(self):
         return self._size or self._probe.size
+
+    @property
+    def frame_size(self):
+        return self.size
 
     @property
     def pixel_format(self):
@@ -70,6 +76,7 @@ class Camera():
 
         self._frames = stdout(command, buffer_size=self.size.width * self.size.height * 3).pipe(
             op.map(lambda frame_bytes: np.frombuffer(frame_bytes, np.uint8).reshape((self.size.height, self.size.width, 3))),
+            #op.map(lambda frame: cv.cvtColor(frame, cv.COLOR_BGR2BGRA)),
             op.publish()
         )
         self._disposable = self._frames.connect()

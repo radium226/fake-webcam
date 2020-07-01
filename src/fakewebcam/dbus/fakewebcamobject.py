@@ -61,7 +61,7 @@ class FakeWebcamObject(Object):
     @method(DBUS_INTERFACE, in_signature="s")
     def Effect(self, name):
         effect = Effect.by_name(name)
-        self._fake_camera.effect = effect()
+        self._fake_camera.effect = effect
 
     @method(DBUS_INTERFACE)
     def Stop(self):

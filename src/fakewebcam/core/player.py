@@ -3,10 +3,13 @@
 from .process import stdin
 import rx.operators as op
 
+import cv2 as cv
+
 def player(size, frame_rate):
     def subscribe(source):
         print("We are here! ")
         return source.pipe(
+            #op.map(lambda frame: cv.cvtColor(frame, cv.COLOR_BGRA2BGR)),
             op.map(lambda frame: frame.tobytes()), 
             stdin([
                 "ffplay", 

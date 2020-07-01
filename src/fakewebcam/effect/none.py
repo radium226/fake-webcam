@@ -6,7 +6,7 @@ from .effect import effect
 
 
 @effect
-def none():
+def none(frame_size, frame_rate):
     def _none(frames):
         return frames.pipe(op.map(lambda frame: frame))
     return _none

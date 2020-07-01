@@ -63,13 +63,21 @@ class FakeCamera:
 
     def _set_effect(self, effect):
         self._effect = effect
-        self._effect_queue.put(effect)
+        self._effect_queue.put(effect(self.source.size, self.source.frame_rate))
 
     effect = property(_get_effect, _set_effect)
 
     @property
     def size(self):
         return self._source_fallback.size
+
+    @property
+    def frame_size(self):
+        return self.source.frame_size
+
+    @property
+    def frame_rate(self):
+        return self.source.frame_rate
 
     @property
     def device_path(self):
@@ -91,26 +99,35 @@ class FakeCamera:
     def start(self, dry_run=False):
         self._install_module()
         print("FRAME_RATE = " + str(self._source_fallback.frame_rate))
+
+        def v4l2(device_path, size, frame_rate):
+            def _v4l2(frames):
+                return frames.pipe(
+                    #op.map(lambda frame: cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)),
+                    stdin([
+                        "ffmpeg", 
+                        "-re", 
+                        "-f", "rawvideo",
+                        "-video_size", f"{size.width}x{size.height}",
+                        "-pixel_format", "bgr24",
+                        "-framerate", str(frame_rate), 
+                        "-i", "-", 
+                        "-vcodec", "rawvideo", 
+                        "-pix_fmt", "yuv420p", 
+                        "-f", "v4l2", 
+                        str(device_path)
+                    ])
+                )
+            return _v4l2
+
         # FIXME: Handle non-dry
-        sink = player(self.size, self.source.frame_rate) if dry_run else stdin([
-            "ffmpeg", 
-            "-re", 
-            "-f", "rawvideo",
-            "-video_size", f"{self.size.width}x{self.size.height}",
-            "-pixel_format", "bgr24",
-            "-framerate", str(self._source_fallback.frame_rate), 
-            "-i", "-", 
-            "-vcodec", "rawvideo", 
-            "-pix_fmt", "yuv420p", 
-            "-f", "v4l2", 
-            str(self.device_path)
-        ])
+        sink = player(self.size, self.source.frame_rate) if dry_run else v4l2(self.device_path, self.size, self.source.frame_rate)
         self._source_queue = Queue()
         self._effect_queue = Queue()
 
         # Initial values
         print("[FakeCamera/start] Putting initial values... ")
-        self._effect_queue.put(ef.none())
+        self._effect_queue.put(ef.none(self.size, self.frame_rate))
         self._source_queue.put(self._source_fallback.frames)
 
         # Source
@@ -125,7 +142,7 @@ class FakeCamera:
         print("[FakeCamera/start] Setting up effects (+ sink)... ")
         self._effect_disposable = from_queue(self._effect_queue).pipe(
             peek(),
-            op.map(lambda effect: source.pipe(effect)), 
+            op.map(lambda effect: source.pipe(effect, op.concat(source))), 
             op.switch_latest(),
             sink,
         ).subscribe()
