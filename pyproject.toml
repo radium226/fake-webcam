@@ -17,12 +17,13 @@ click = "^7.1.2"
 svglib = "^1.0.0"
 cairosvg = "^2.4.2"
 easing-functions = "^1.0.3"
+pytest = "^5.4.3"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.5.3"
 
 [tool.poetry.scripts]
-fake-webcam = "fakewebcam:run"
+fake-webcam = "fakewebcam.client:run"
 
 [tool.dephell.main]
 from = {format = "poetry", path = "pyproject.toml"}

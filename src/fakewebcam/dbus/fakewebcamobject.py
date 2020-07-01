@@ -9,6 +9,8 @@ from tempfile import mkstemp
 from pathlib import Path
 from threading import Thread
 
+from ..effect import Effect
+
 
 class FakeWebcamObject(Object):
 
@@ -56,6 +58,10 @@ class FakeWebcamObject(Object):
     def EffectPixelate(self, ratio):
         self._fake_camera.effect = Effect.pixelate(ratio)
 
+    @method(DBUS_INTERFACE, in_signature="s")
+    def Effect(self, name):
+        effect = Effect.by_name(name)
+        self._fake_camera.effect = effect()
 
     @method(DBUS_INTERFACE)
     def Stop(self):

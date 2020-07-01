@@ -2,6 +2,7 @@
 
 from .fromqueue import from_queue
 
+from rx import operators as op
 from rx.operators import publish, switch_latest, concat, with_latest_from, map as rx_map
 
 from queue import Queue
@@ -20,14 +21,14 @@ from pathlib import Path
 
 from time import sleep
 
-from .effect import Effect
-
 import cv2
+
+from .. import effect as ef
 
 class FakeCamera:
 
     def __init__(self, source_fallback, label="Fake Camera"):
-        self._queue = None
+        self._source_queue = None
         self._source_fallback = source_fallback
         self._source = source_fallback
         self._label = label
@@ -36,7 +37,7 @@ class FakeCamera:
         return self._source
 
     def _set_source(self, source):
-        self._queue.put(source.frames.pipe(resize(self.size), concat(self._source_fallback.frames)))
+        self._source_queue.put(source.frames.pipe(resize(self.size), concat(self._source_fallback.frames)))
         self._source = source
 
     source = property(_get_source, _set_source)
@@ -72,17 +73,6 @@ class FakeCamera:
         sp.run(["sudo", "modprobe", "--remove", "v4l2loopback"])
 
     def start(self, dry_run=False):
-        from .image import Image
-        from .size import Size
-
-        def _combine_image(frame, image):
-            x = y = 50
-            frame_copy = frame.copy()
-            frame_copy[x:y+image.shape[0], x:x+image.shape[1]] = image
-            return frame_copy
-        def combine_image(image):
-            return rx_map(lambda frame: _combine_image(frame, image))
-
         self._install_module()
         print("FRAME_RATE = " + str(self._source_fallback.frame_rate))
         # FIXME: Handle non-dry
@@ -99,20 +89,45 @@ class FakeCamera:
             "-f", "v4l2", 
             str(self.device_path)
         ])
-        self._queue = Queue()
+        self._source_queue = Queue()
         self._effect_queue = Queue()
-        self._disposable = from_queue(self._queue).pipe(
-            switch_latest(), 
-            #with_latest_from(from_queue(self._effect_queue)), 
-            combine_image(Image.load_svg(Path("image.svg"), size=Size(10, 10))),
+
+        source = from_queue(self._source_queue).pipe(op.switch_latest(), op.publish())
+        source.connect()
+
+        self._effect_queue.put(ef.none())
+        self._source_queue.put(self._source_fallback.frames)
+
+
+
+        def switch_latest_operator(operators):
+
+            
+
+
+        self._disposable = from_queue(self._effect_queue).pipe(
+            effect(), 
+            op.switch_latest(), 
             sink
         ).subscribe()
-        self._effect_queue.put(Effect.circle())
-        self._queue.put(self._source_fallback.frames)
+
+
+
+        #def effects(frames):
+        #    
+        #    return from_queue(self._effect_queue).pipe(
+        #        op.flat_map(lambda effect: frames.pipe(effect))
+        #    )
+       # 
+        
+        #self._disposable = sources.pipe(
+        #    effects, 
+        #    sink
+        #).subscribe()
 
     def stop(self):
         self._disposable.dispose()
-        self._queue = None
+        self._source_queue = None
         self._uninstall_module()
 
     def __enter__(self):
