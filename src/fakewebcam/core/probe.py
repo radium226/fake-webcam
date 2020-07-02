@@ -23,6 +23,8 @@ def probe(file_path):
         str(file_path),
     ]
 
+    #print(ffprobe_command)
+
     data = json.loads(run(ffprobe_command, stdout=PIPE).stdout.decode("utf-8"))
     #print(data)
 

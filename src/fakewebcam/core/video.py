@@ -23,6 +23,10 @@ class Video:
         return self._probe.size
 
     @property
+    def frame_rate(self):
+        return self._probe.frame_rate
+
+    @property
     def reverse(self):
         return Video(self._file_path, loop=self._loop, reverse=not self._reverse, _probe=self._probe)
 

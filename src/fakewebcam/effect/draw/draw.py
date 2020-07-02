@@ -39,7 +39,8 @@ def draw_figure_on_frame(figure, frame):
 def draw(figures):
 
     def _draw(frames):
-        return rx.zip(frames, figures).pipe(
+        return frames.pipe(
+            op.with_latest_from(figures),
             op.map(lambda pair: draw_figure_on_frame(pair[1], pair[0])),
         )
 

@@ -5,5 +5,6 @@ from .effect import Effect
 from .none import NoneEffect
 from .gray import GrayEffect
 from .imageoverlay import ImageOverlayEffect
+from .overlay import OverlayEffect
 
 #from .bouncingimage import bouncing_image
