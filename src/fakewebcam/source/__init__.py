@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 
 from .readfilevideosource import ReadFileVideoSource
-from .resizeframevideosource import ResizeFrameVideoSource
+from .resizeframevideosource import resize_frames

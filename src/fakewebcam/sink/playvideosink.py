@@ -32,9 +32,9 @@ class PlayVideoSink(VideoSink):
         return subscribe
 
 
-def _play(self):
-    self.frames.pipe(
-        PlayVideoSink(self.frame_size, self.frame_rate).frames
-    ).run()
-
-VideoSource.play = _play
+def play():
+    def _play(video_source):
+        video_source.frames.pipe(
+            PlayVideoSink(video_source.frame_size, video_source.frame_rate).frames
+        ).run()
+    return _play

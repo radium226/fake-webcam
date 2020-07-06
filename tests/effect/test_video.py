@@ -9,7 +9,13 @@ def test_video():
     size = Size(100, 100)
     print(size)
 
-    video_source = ReadFileVideoSource(Path("tests/bmth.webm"))
+    bmth = VideoFile()
+    uv = VideoFile()
 
-    video_source \
-        .resize(size).play()
+    v = uv.through(
+        resize_frames(Size(800, 600)), 
+        gray(), 
+        overlay(bmth.through(resize_frames(Size(200, 100))))
+    )
+
+    v.through(play())

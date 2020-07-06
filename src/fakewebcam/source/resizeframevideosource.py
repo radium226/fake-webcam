@@ -25,7 +25,7 @@ class ResizeFrameVideoSource(MapFrameVideoSource):
         return self._frame_size
 
 
-def _resize(self, frame_size):
-    return ResizeFrameVideoSource(self, frame_size)
-
-VideoSource.resize = _resize
+def resize_frames(frame_size):
+    def _resize_frames(video_source):
+        return ResizeFrameVideoSource(video_source, frame_size)
+    return _resize_frames
