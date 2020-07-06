@@ -3,13 +3,7 @@
 from abc import ABC, abstractmethod
 from functools import reduce
 
-
-class VideoSource(ABC):
-
-    @property
-    @abstractmethod
-    def frame_size(self):
-        pass
+class Source:
 
     @property
     @abstractmethod
@@ -21,9 +15,14 @@ class VideoSource(ABC):
     def frame_rate(self):
         pass
 
-    def through(self, *transformations):
-        return reduce(lambda video_source, transformation: transformation.transform(video_source), transformations, self)
+    @property
+    @abstractmethod
+    def frame_size(self):
+        pass
+
 
     def to(self, sink):
         return sink.drain(self)
-    
+
+    def through(self, *effects):
+        return reduce(lambda source, effect: effect.edit(source), effects, self)

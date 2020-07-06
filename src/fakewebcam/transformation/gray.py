@@ -5,12 +5,12 @@ import cv2
 
 from .transformation import Transformation
 
-class Gray(Transformation):
+class GrayTransformation(Transformation):
 
     def __init__(self):
         pass
 
-    def transform(self, video):
+    def transform(self, video_source):
         print("[transformation/gray]")
         def _gray(color_frame):
             print(f"[transformation/gray] _gray({color_frame})")
@@ -27,5 +27,4 @@ class Gray(Transformation):
 
 
 def gray():
-    def _gray(video):
-        return 
+    return GrayTransformation()

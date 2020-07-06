@@ -5,5 +5,5 @@ from abc import ABC, abstractmethod
 class Transformation(ABC):
 
     @abstractmethod
-    def transform(self, video):
+    def transform(self, video_source):
         pass

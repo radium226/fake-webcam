@@ -2,9 +2,8 @@
 
 from abc import ABC, abstractmethod
 
-
-class VideoSink(ABC):
+class Sink(ABC):
 
     @abstractmethod
-    def drain(self, video_source):
+    def drain(self, source):
         pass
