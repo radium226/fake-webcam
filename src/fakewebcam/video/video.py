@@ -5,14 +5,19 @@ from functools import reduce
 
 class Video:
 
-    def __init__(self, frames, frame_size, frame_rate):
+    def __init__(self, frames, frame_size, frame_rate, alpha=False):
         self._frames = frames
         self._frame_size = frame_size
         self._frame_rate = frame_rate
+        self._alpha = alpha
 
     @property
     def frames(self):
         return self._frames
+
+    @property
+    def alpha(self):
+        return self._alpha
 
     @property
     def frame_size(self):

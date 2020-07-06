@@ -24,7 +24,7 @@ from time import sleep
 
 import cv2
 
-from .. import effect as ef
+#from .. import effect as ef
 
 from rx import scheduler as sh
 

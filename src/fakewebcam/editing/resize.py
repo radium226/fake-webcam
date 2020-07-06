@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-from ..video import Video
-from ..videoediting import VideoEditing
+from ..video.video import Video
+from ..video.videoediting import VideoEditing
 
 from rx import operators as ops
-
 import cv2
 
 

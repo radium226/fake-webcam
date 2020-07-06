@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-from ..videoediting import VideoEditing
-from ..video import Video
-from ...common import Position
+from ..video.video import Video
+from ..video.videoediting import VideoEditing
+from ..common import Position
 
-from ...effect.draw.figure import Figure
-from ...effect.draw.draw import draw_figure_on_frame
+from ..animation.draw.figure import Figure
+from ..animation.draw.draw import draw_figure_on_frame
 
 from rx import operators as ops
 import rx

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from fakewebcam.video import read_file, play, write_file
-from fakewebcam.video.editing import gray, resize, overlay
+from fakewebcam.editing import gray, resize, overlay
 
 from pathlib import Path
 from fakewebcam.common import Size, Position

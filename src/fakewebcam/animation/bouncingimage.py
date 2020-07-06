@@ -5,8 +5,8 @@ from .draw import Figure, draw
 from .draw.draw import draw_figure_on_frame
 from .ease import ease, ease_size
 import easing_functions as ef
-from ..core.size import Size
-from ..core.position import Position
+from ..common.size import Size
+from ..common.position import Position
 
 #from .svg.rx import rasterize
 from .svg.rx import rasterize
