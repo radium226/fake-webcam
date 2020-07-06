@@ -16,7 +16,7 @@ class FileWriter(Sink):
             stdin([
                 "ffmpeg", 
                 "-y",
-                "-loglevel", "quiet",
+                #"-loglevel", "quiet",
                 "-f", "rawvideo",
                 "-video_size", f"{source.frame_size.width}x{source.frame_size.height}",
                 "-r", str(source.frame_rate),

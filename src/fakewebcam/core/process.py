@@ -6,6 +6,7 @@ from threading import Thread, Lock
 from functools import partial
 from rx.disposable import Disposable, CompositeDisposable
 from signal import SIGQUIT
+import os
 
 
 def stdin(command):
@@ -23,11 +24,12 @@ def stdin(command):
                 observer.on_completed()
 
             def on_completed():
-                #print("[stdin] on_completed")
-                #print(f"[stdin/command={command}] Killing process...")
-                process.send_signal(SIGQUIT)
+                print("[stdin] on_completed")
+                print(f"[stdin/command={command}] Killing process (pid={process.pid})...")
+                process.stdin.close()
+                #process.send_signal(SIGQUIT)
                 process.wait()
-                #print(f"[stdin/command={command}] Process killed! ")
+                print(f"[stdin/command={command}] Process killed! ")
             
             thread = Thread(target=thread_target)
             thread.start()

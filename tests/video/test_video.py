@@ -26,8 +26,8 @@ UV_VIDEO = Video.read_file(Path("tests/ultra-vomit.mkv"))
 #        gray(),
 #    ).to(play()).run()
 
-#def test_to_write_video():
-#    BMTH_VIDEO.to(write_file(Path("tests/bmth.mp4"))).run()
+def test_to_write_video():
+    BMTH_VIDEO.through(resize(Size(200, 100))).to(write_file(Path("tests/bmth.mp4"))).run()
 
 #def test_overlay():
 #    UV_VIDEO.through(
