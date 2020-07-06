@@ -2,8 +2,8 @@
 
 from abc import ABC, abstractmethod
 
-class Effect(ABC):
+class VideoSink(ABC):
 
     @abstractmethod
-    def edit(self, source):
+    def drain(self, video):
         pass

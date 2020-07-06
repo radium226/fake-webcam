@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from .spi.source import Source
-from .source.filereader import FileReader
+from functools import reduce
 
-class Video(Source):
+
+class Video:
 
     def __init__(self, frames, frame_size, frame_rate):
         self._frames = frames
@@ -22,6 +22,11 @@ class Video(Source):
     def frame_rate(self):
         return self._frame_rate
 
-    @classmethod
-    def read_file(cls, file_path):
-        return FileReader(file_path)
+    def through(self, *editings):
+        return reduce(lambda source, editing: editing.edit(source), editings, self)
+
+    def to(self, video_sink):
+        return video_sink.drain(self)
+
+    def with_frames(self, frames):
+        return Video(frames, self.frame_size, self.frame_rate)

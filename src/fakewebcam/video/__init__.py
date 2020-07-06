@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
 from .video import Video
-from .sink import write_file, play
-from .effect import gray, resize, overlay
+from .videosink import VideoSink
+from .videoediting import VideoEditing
+
+from .writefile import write_file
+from .readfile import read_file
+from .play import play
