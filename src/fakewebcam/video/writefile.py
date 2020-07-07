@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from ..core.process import stdin
+from ..process import stdin
 from .videosink import VideoSink
 
 from rx import operators as ops

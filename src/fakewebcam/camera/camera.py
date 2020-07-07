@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 
-from ..core.process import stdout
+from ..process import stdout
 
 import rx.operators as op
 
 import numpy as np
 
 from .recording import Recording
-from ..core.probe import probe
 
 import cv2 as cv
 
-from ..video.video import Video
+from ..video import Video, probe
 
 class Camera():
 

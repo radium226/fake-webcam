@@ -7,3 +7,5 @@ from .videoediting import VideoEditing
 from .writefile import write_file
 from .readfile import read_file
 from .play import play
+
+from .probe import probe

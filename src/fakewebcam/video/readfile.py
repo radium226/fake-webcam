@@ -3,8 +3,8 @@
 from ..common import Size
 
 # FIXME: It should be in another package
-from ..core.probe import probe as old_probe
-from ..core.process import stdout
+from .probe import probe as old_probe
+from ..process import stdout
 
 from .video import Video
 

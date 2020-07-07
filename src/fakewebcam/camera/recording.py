@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #from .video import Video
-from ..core.process import stdin
+from ..process import stdin
 
 from ..video import read_file, write_file
 

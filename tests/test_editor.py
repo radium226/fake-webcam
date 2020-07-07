@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from fakewebcam.core import Editor
+from fakewebcam.editor import Editor
 from fakewebcam import video
 from fakewebcam import editing
 from fakewebcam import animation

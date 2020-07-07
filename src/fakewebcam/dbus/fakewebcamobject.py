@@ -22,7 +22,7 @@ class FakeWebcamObject(Object):
 
     def __init__(self, bus, bus_name):
         super().__init__(bus, self.OBJECT_PATH, bus_name)
-        self._fake_camera = None
+        self._editor = None
         self._camera = None
 
     @method(DBUS_INTERFACE, in_signature="sb")

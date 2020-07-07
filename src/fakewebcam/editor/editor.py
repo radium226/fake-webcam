@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-from .fromqueue import from_queue
+from ..common.fromqueue import from_queue
 
 from rx import operators as ops
 
 from queue import Queue
 
-from .process import stdin
+from ..process import stdin
 
 import subprocess as sp
 

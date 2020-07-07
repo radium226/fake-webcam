@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from ..video import VideoSink
-from ..core.process import stdin
+from ..process import stdin
 
 import cv2
 from rx import operators as ops
