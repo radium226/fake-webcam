@@ -4,7 +4,7 @@ from subprocess import run, PIPE
 import json
 from collections import namedtuple
 
-from ..core.size import Size
+from ..common.size import Size
 
 import re
 

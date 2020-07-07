@@ -2,7 +2,7 @@
 
 import rx
 from rx import operators as op
-from ...core.size import Size
+from ...common.size import Size
 
 def ease(factory, start, end, frame_rate, duration):
         ease = factory(start=start, end=end, duration=frame_rate * duration)

@@ -13,8 +13,8 @@ class Gray(VideoEditing):
     def edit(self, video):
         def _gray(color_frame):
             print(f"[effect/Gray/edit] _gray({color_frame})")
-            gray_frame = cv2.cvtColor(color_frame, cv2.COLOR_BGR2GRAY)
-            return cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGR)
+            gray_frame = cv2.cvtColor(color_frame, cv2.COLOR_BGRA2GRAY)
+            return cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2BGRA)
 
         return Video(
             video.frames.pipe(ops.map(_gray)),

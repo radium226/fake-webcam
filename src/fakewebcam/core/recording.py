@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .video import Video
+#from .video import Video
 from .process import stdin
 
 import rx.operators as op

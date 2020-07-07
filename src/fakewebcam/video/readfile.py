@@ -12,6 +12,7 @@ import rx
 from rx import operators as ops
 
 import numpy as np
+import cv2
 
 
 def probe(file_path):
@@ -33,7 +34,8 @@ def read_file(file_path):
     ]
         
     frames = stdout(command, buffer_size=frame_size.width * frame_size.height * 3).pipe(
-        ops.map(lambda frame_bytes: np.frombuffer(frame_bytes, np.uint8).reshape((frame_size.height, frame_size.width, 3)))
+        ops.map(lambda frame_bytes: np.frombuffer(frame_bytes, np.uint8).reshape((frame_size.height, frame_size.width, 3))), 
+        ops.map(lambda bgr_frame: cv2.cvtColor(bgr_frame, cv2.COLOR_BGR2BGRA)),
     )
 
     return Video(frames, frame_size, frame_rate)

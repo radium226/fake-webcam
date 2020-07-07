@@ -32,7 +32,7 @@ def draw_figure_on_frame(figure, frame):
     mask = image[..., 3:] / 255.0
 
     altered_frame = frame.copy()
-    altered_frame[y:y+h, x:x+w] = (1.0 - mask) * frame[y:y+h, x:x+w] + mask * image_colors
+    altered_frame[y:y+h, x:x+w] = (1.0 - mask) * frame[y:y+h, x:x+w] + mask * image
     return altered_frame
 
 

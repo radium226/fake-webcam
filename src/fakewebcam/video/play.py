@@ -4,6 +4,7 @@ from .videosink import VideoSink
 from ..core.process import stdin
 
 import rx.operators as ops
+import cv2
 
 
 class PlayVideoSink(VideoSink):
@@ -13,6 +14,7 @@ class PlayVideoSink(VideoSink):
 
     def drain(self, video):
         return video.frames.pipe(
+            ops.map(lambda bgra_frame: cv2.cvtColor(bgra_frame, cv2.COLOR_BGRA2BGR)),
             ops.map(lambda frame: frame.tobytes()), 
             stdin([
                 "ffplay", 

@@ -2,17 +2,13 @@
 
 from .fromqueue import from_queue
 
-from rx import operators as op
-from rx.operators import publish, switch_latest, concat, with_latest_from, map as rx_map
-from rx import operators as op
+from rx import operators as ops
 
 from queue import Queue
 
 from .process import stdin
 
 from .player import player
-
-from .frame import resize
 
 import subprocess as sp
 
@@ -24,9 +20,10 @@ from time import sleep
 
 import cv2
 
-#from .. import effect as ef
-
 from rx import scheduler as sh
+
+from ..editing import concat, resize
+from ..video import play, Video
 
 def peek():
     def _print(item):
@@ -43,20 +40,15 @@ def peek():
 
 class FakeCamera:
 
-    def __init__(self, source_fallback, label="Fake Camera"):
-        self._source_queue = None
-        self._source_fallback = source_fallback
-        self._source = source_fallback
+    def __init__(self, default_video, label="Fake Camera"):
+        self._video_queue = None
+        self._default_video = default_video
         self._label = label
 
-    def _get_source(self):
-        return self._source
-
-    def _set_source(self, source):
-        self._source_queue.put(source.frames.pipe(resize(self.size), concat(self._source_fallback.frames)))
-        self._source = source
-
-    source = property(_get_source, _set_source)
+    def switch_video(self, video):
+        self._video_queue.put(
+            video.through(resize(self.frame_size), concat(self._default_video))
+        )
 
     def _get_effect(self):
         return None
@@ -68,16 +60,12 @@ class FakeCamera:
     effect = property(_get_effect, _set_effect)
 
     @property
-    def size(self):
-        return self._source_fallback.size
-
-    @property
     def frame_size(self):
-        return self.source.frame_size
+        return self._default_video.frame_size
 
     @property
     def frame_rate(self):
-        return self.source.frame_rate
+        return self._default_video.frame_rate
 
     @property
     def device_path(self):
@@ -97,13 +85,30 @@ class FakeCamera:
         sp.run(["sudo", "modprobe", "--remove", "v4l2loopback"])
 
     def start(self, dry_run=False):
+        self._video_queue = Queue()
+        self._video_queue.put(self._default_video)
+
+        frames = from_queue(self._video_queue).pipe(
+            ops.subscribe_on(sh.NewThreadScheduler()),
+            ops.map(lambda video: video.frames),
+            ops.switch_latest(), 
+            ops.publish()
+        )
+        frames.connect()
+
+        video = Video(frames, self.frame_size, self.frame_rate)
+
+        self._video_disposable = video.to(play() if dry_run else play()).subscribe()
+
+
+        '''
         self._install_module()
         print("FRAME_RATE = " + str(self._source_fallback.frame_rate))
 
         def v4l2(device_path, size, frame_rate):
             def _v4l2(frames):
                 return frames.pipe(
-                    #op.map(lambda frame: cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)),
+                    op.map(lambda frame: cv2.cvtColor(frame, cv2.COLOR_BGRA2BGR)),
                     stdin([
                         "ffmpeg", 
                         "-re", 
@@ -127,8 +132,8 @@ class FakeCamera:
 
         # Initial values
         print("[FakeCamera/start] Putting initial values... ")
-        self._effect_queue.put(ef.NoneEffect())
-        self._source_queue.put(self._source_fallback.frames)
+        self._editing_queue.put(e.noop())
+        self._video_queue.put(self._default_video)
 
         # Source
         print("[FakeCamera/start] Setting up source... ")
@@ -149,15 +154,18 @@ class FakeCamera:
 
         print("[FakeCamera/start] Connecting source... ")
         self._source_disposable = source.connect()
+        '''
 
     def stop(self):
-        self._effect_disposable.dispose()
+        self._video_disposable.dispose()
+        '''
         self._source_disposable.dispose()
 
         self._source_queue = None
         self._effect_queue = None
         
         self._uninstall_module()
+        '''
 
     def __enter__(self):
         self.start()
