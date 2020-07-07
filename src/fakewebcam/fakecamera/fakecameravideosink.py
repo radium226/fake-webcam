@@ -10,7 +10,7 @@ from rx import operators as ops
 class FakeCameraVideoSink(VideoSink):
 
     def __init__(self, device_path):
-        self._device_path
+        self._device_path = device_path
 
     def drain(self, video):
         return video.frames.pipe(
@@ -19,7 +19,7 @@ class FakeCameraVideoSink(VideoSink):
                 "ffmpeg", 
                 "-re", 
                 "-f", "rawvideo",
-                "-video_size", f"{video.size.width}x{video.size.height}",
+                "-video_size", f"{video.frame_size.width}x{video.frame_size.height}",
                 "-pixel_format", "bgr24",
                 "-framerate", str(video.frame_rate), 
                 "-i", "-", 

@@ -6,6 +6,8 @@ from pyudev import Context
 from pathlib import Path
 import subprocess as sp
 
+from time import sleep
+
 
 class FakeCamera:
 
@@ -24,7 +26,7 @@ class FakeCamera:
     def start(self):
         self.install_module()
 
-    def stop():
+    def stop(self):
         self.uninstall_module()
 
     def install_module(self):

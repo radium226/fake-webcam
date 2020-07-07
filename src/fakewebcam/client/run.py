@@ -56,49 +56,17 @@ def loop(duration):
 
 
 @show.command()
-def fallback():
+def default():
     bus = SessionBus()
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.ShowFallback()
-
+    remote_object.ShowDefault()
 
 @show.command()
-@option("--url", "url", required=True)
-def youtube(url):
-    pass
-
-
-@show.command()
-@option("--file", "file_path", required=True)
-def video(file_path):
+@option("--file", "file_path")
+def bouncing_image(file_path):
     bus = SessionBus()
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.ShowVideo(file_path)
-
-
-@run.group()
-def effect():
-    pass
-
-@effect.command()
-def gray():
-    bus = SessionBus()
-    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.EffectGray()
-
-@effect.command()
-def none():
-    bus = SessionBus()
-    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.EffectNone()
-
-@effect.command()
-@option("--file", "file_path", required=True)
-def image_overlay(file_path):
-    bus = SessionBus()
-    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
-    remote_object.EffectImageOverlay(file_path)
-
+    remote_object.ShowBouncingImage(file_path)
 
 @run.command()
 def daemon():
