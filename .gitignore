@@ -138,5 +138,5 @@ dmypy.json
 cython_debug/
 
 *.tar.gz
-*.tar.xz
+*.tar.zst
 

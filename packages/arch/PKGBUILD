@@ -7,8 +7,15 @@ provides=('easy')
 source=(
     "fakewebcam-${pkgver}.tar.gz"
     "usr_share_dbus-1_services_com.github.radium226.FakeWebcam.service"
+    "https://files.pythonhosted.org/packages/36/33/cc13584dc7db05832222b6dea9805beeaf24c08acb26de5cbc555ff1969e/easing_functions-1.0.3-py3-none-any.whl"
 )
+
+noextract=(
+    "easing_functions-1.0.3-py3-none-any.whl"
+)
+
 sha256sums=(
+    "SKIP"
     "SKIP"
     "SKIP"
 )
@@ -43,6 +50,8 @@ build() {
 }
 
 package() {
+    PIP_CONFIG_FILE="/dev/null" pip install --isolated --root="${pkgdir}" --ignore-installed --no-deps "easing_functions-1.0.3-py3-none-any.whl"
+
     cd "fakewebcam-${pkgver}"
     python setup.py install --root="${pkgdir}" --optimize=1
 
