@@ -7,6 +7,7 @@ from ..animation import bounce
 from ..editor import Editor
 from ..video import play
 from ..image import read_file
+from ..video import Video
 
 from time import sleep
 from tempfile import mkstemp
@@ -61,5 +62,10 @@ class FakeWebcam:
         )))
 
     def show_default(self):
+        print("Fallback to default! ")
         self._editor.switch_video(self._camera.video)
+
+    def show_freeze(self):
+        frame = self._editor.current_frame
+        self._editor.switch_video(Video.repeat_frame(frame, frame_rate=self._camera.frame_rate))
         

@@ -33,5 +33,9 @@ class FakeWebcamObject(Object):
         self._fake_webcam.show_bouncing_image(Path(image_file_path))
 
     @method(DBUS_INTERFACE)
+    def ShowFreeze(self):
+        self._fake_webcam.show_freeze()
+
+    @method(DBUS_INTERFACE)
     def Stop(self):
         self._fake_webcam.stop()

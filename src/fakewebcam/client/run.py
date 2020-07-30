@@ -68,6 +68,12 @@ def bouncing_image(file_path):
     remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
     remote_object.ShowBouncingImage(file_path)
 
+@show.command()
+def freeze():
+    bus = SessionBus()
+    remote_object = bus.get_object(BUS_NAME, FakeWebcamObject.OBJECT_PATH)
+    remote_object.ShowFreeze()
+
 @run.command()
 def daemon():
     mainloop = GLib.MainLoop()

@@ -25,6 +25,10 @@ from ..video import play, Video
 
 from rx.disposable import CompositeDisposable
 
+from itertools import count
+
+from ..common import print_frame_index
+
 
 class Editor:
 
@@ -34,6 +38,8 @@ class Editor:
 
         self._default_video = default_video
         self._video_sink = video_sink
+
+        self._frames = None
 
     def switch_video(self, video):
         self._video_queue.put(
@@ -56,6 +62,12 @@ class Editor:
         context = Context()
         return Path(list(context.list_devices(subsystem="video4linux", ID_V4L_PRODUCT=self._label))[0].device_node)
 
+    @property
+    def current_frame(self):
+        current_frame = self._frames.pipe(ops.first()).run()
+        print(f"current_frame={current_frame}")
+        return current_frame
+
     def start(self):
         self._disposable = CompositeDisposable()
 
@@ -68,7 +80,7 @@ class Editor:
         frames = from_queue(self._video_queue).pipe(
             ops.subscribe_on(sh.NewThreadScheduler()),
             ops.map(lambda video: video.frames),
-            ops.switch_latest(), 
+            ops.switch_latest(),
             ops.publish()
         )
         
@@ -76,10 +88,21 @@ class Editor:
 
         video = Video(frames, self.frame_size, self.frame_rate)
 
-        edited_video = Video(from_queue(self._editing_queue).pipe(
+        def peek(f):
+            print("Frame")
+            return f
+
+        self._frames = from_queue(self._editing_queue).pipe(
+            ops.subscribe_on(sh.NewThreadScheduler()),
             ops.map(lambda editing: video.through(editing, concat(video)).frames), 
             ops.switch_latest(), 
-        ), self.frame_size, self.frame_rate)
+            print_frame_index(),
+            ops.publish()
+        )
+        
+        self._disposable.add(self._frames.connect())
+        
+        edited_video = Video(self._frames, self.frame_size, self.frame_rate)
 
         self._disposable.add(edited_video.to(self._video_sink).subscribe())
 
