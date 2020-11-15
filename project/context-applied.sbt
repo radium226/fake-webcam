@@ -1,0 +1,1 @@
+addCompilerPlugin("org.augustjune" %% "context-applied" % "0.1.4")
