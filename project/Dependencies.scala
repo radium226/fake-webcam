@@ -28,8 +28,6 @@ object Dependencies {
 
   lazy val contextApplied = "org.augustjune" %% "context-applied" % "0.1.4"
 
-  lazy val circe = Seq("circe-core", "circe-parser", "circe-generic").map({ name => "io.circe" %% name % "0.13.0" })
-
   lazy val shapeless = Seq(
     "com.chuusai" %% "shapeless" % "2.3.3"
   )
@@ -49,5 +47,16 @@ object Dependencies {
   lazy val logback = Seq("ch.qos.logback" % "logback-classic" % "1.2.3")
 
   lazy val slf4j = Seq("org.slf4j" % "slf4j-simple" % "1.7.30")
+
+  lazy val circe = Seq(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser"
+  ).map(_ % Versions.circe)
+
+  lazy val log4cats = Seq(
+    "io.chrisdavenport" %% "log4cats-core",
+    "io.chrisdavenport" %% "log4cats-slf4j"
+  ).map(_ % Versions.log4cats)
 
 }

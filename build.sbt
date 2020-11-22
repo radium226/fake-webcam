@@ -35,6 +35,12 @@ lazy val root = (project in file("."))
     // GraalVM
     libraryDependencies += "org.scalameta" %% "svm-subs" % "20.2.0",
 
+    // Log4Cats
+    libraryDependencies ++= Dependencies.log4cats,
+
+    // Circe
+    libraryDependencies ++= Dependencies.circe,
+
     // Eviction Fix
     dependencyOverrides ++= Dependencies.cats,
 
