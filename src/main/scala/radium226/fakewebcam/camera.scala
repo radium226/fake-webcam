@@ -32,8 +32,18 @@ object CameraAlgebra {
         }
 
         override def readFramesFromCamera(camera: Camera): Stream[F, Frame] = {
-            val ffmpegCommand = List(
-              "ffmpeg",
+            val ffmpegCommand = List("ffmpeg",
+              //"-re",
+              "-loglevel", "quiet",
+              "-f", "v4l2",
+              "-i", s"${camera.devicePath}",
+              "-f", "rawvideo",
+              "-vcodec", "rawvideo",
+              "-pix_fmt", "bgr24",
+              "-f", "rawvideo",
+              "-"
+            )
+            /*  "ffmpeg",
               //"-loglevel", "quiet",
               "-f", "v4l2",
               "-input_format", PixelFormat.format(camera.mediaInfo.pixelFormat),
@@ -46,7 +56,7 @@ object CameraAlgebra {
               "-s", s"${camera.mediaInfo.frameSize.width}x${camera.mediaInfo.frameSize.height}",
               "-pix_fmt", "bgr24",
               "-"
-            )
+            )*/
 
             val ffmpegProcessBuilder = new ProcessBuilder()
               .inheritIO()
@@ -71,7 +81,7 @@ object CameraAlgebra {
               .chunkN((3 * camera.mediaInfo.frameSize.width * camera.mediaInfo.frameSize.height).toInt, allowFewer = false)
               .zipWithIndex
               .map({ case (byteChunk, index) =>
-                if (index % 25 == 0) println(s"index=${index}")
+                //if (index % 25 == 0) println(s"index=${index}")
                 Frame(camera.mediaInfo.frameSize, byteChunk.toBitVector.toByteArray)
               })
           }
@@ -92,7 +102,7 @@ case class Camera(devicePath: Path, mediaInfo: MediaInfo)
 
 trait CameraSyntax {
 
-  implicit class CameraOps(camera: Camera) {
+  implicit class CameraOps[F[_]](camera: Camera) {
 
     def readFrames[F[_] : CameraAlgebra] = F.readFramesFromCamera(camera)
 

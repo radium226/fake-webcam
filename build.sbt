@@ -20,6 +20,8 @@ lazy val fs2Dependency = for {
 lazy val root = (project in file("."))
   .settings(
     addCompilerPlugin(Dependencies.contextApplied),
+    addCompilerPlugin(Dependencies.kindProjector),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
     name := "fake-webcam",
     // cats
     libraryDependencies ++= Dependencies.cats,

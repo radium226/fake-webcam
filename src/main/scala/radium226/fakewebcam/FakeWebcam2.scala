@@ -9,7 +9,7 @@ import fs2.concurrent.{Queue, Topic}
 import scala.concurrent.duration._
 
 
-object FakeWebcam extends IOApp {
+object FakeWebcam2 extends IOApp {
 
   sealed trait Action
 

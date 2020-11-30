@@ -2,6 +2,10 @@ import sbt._
 
 object Dependencies {
 
+  lazy val contextApplied = "org.augustjune" %% "context-applied" % "0.1.4"
+
+  lazy val kindProjector = "org.typelevel" % "kind-projector_2.13.4" % "0.11.1"
+
   lazy val scalaTest = Seq(
     "org.scalatest" %% "scalatest" % "3.2.3"
   )
@@ -25,8 +29,6 @@ object Dependencies {
   lazy val chronicleQueue = Seq(
     "net.openhft" % "chronicle-queue" % "5.20.4"
   )
-
-  lazy val contextApplied = "org.augustjune" %% "context-applied" % "0.1.4"
 
   lazy val shapeless = Seq(
     "com.chuusai" %% "shapeless" % "2.3.3"

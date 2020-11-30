@@ -6,7 +6,9 @@ webcam()
         -f "v4l2" \
         -i "/dev/video0" \
         -f "rawvideo" \
+        -vcodec "rawvideo" \
         -pix_fmt "bgr24" \
+        -f "rawvideo" \
         pipe:-
 }
 

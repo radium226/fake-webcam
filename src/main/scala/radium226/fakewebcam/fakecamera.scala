@@ -57,14 +57,28 @@ object V4L2LoopbackFakeCameraAlgebra {
         override def fakeCameraResource(label: String): Resource[F, FakeCamera] = {
           Resource
             .make[F, Unit](insertModule(label))({ _ => removeModule() })
-            .as(FakeCamera(label, Paths.get("/dev/video4")))
+            .as(FakeCamera(label, Paths.get("/dev/video0")))
 
         }
-
+/*
+ffmpeg \
+        -re \
+        -f "rawvideo" \
+        -video_size "1280x720" \
+        -pixel_format "bgr24" \
+        -framerate 30 \
+        -i pipe:- \
+        -vcodec "rawvideo" \
+        -pix_fmt "yuv420p" \
+        -threads "0" \
+        -f "v4l2" \
+        "/dev/video2"
+ */
         override def writeFramesToFakeCamera(fakeCamera: FakeCamera, mediaInfo: MediaInfo): Pipe[F, Frame, Unit] = { frameStream =>
           val ffmpegCommand = List(
             "ffmpeg",
-            "-re",
+            "-loglevel", "quiet",
+            //"-re",
             "-f", "rawvideo",
             "-video_size", s"${mediaInfo.frameSize.width}x${mediaInfo.frameSize.height}",
             "-pixel_format", "bgr24",
@@ -72,6 +86,7 @@ object V4L2LoopbackFakeCameraAlgebra {
             "-i", "-",
             "-vcodec", "rawvideo",
             "-pix_fmt", "yuv420p",
+            "-threads", "0",
             "-f", "v4l2",
             s"${fakeCamera.devicePath}"
           )
