@@ -36,3 +36,5 @@ project/plugins/project/
 .worksheet
 .idea
 .bsp
+.metals
+.vscode

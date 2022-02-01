@@ -1,14 +1,13 @@
-package radium226
+package radium226.video
 
 import java.nio.file.{Path, Paths}
 
 import cats.effect.{ExitCode, IO, IOApp}
-import fs2._
-import radium226.video.splitScenes
+import fs2.{Pipe, Stream}
 
-package object video {
+package object v1 {
 
-  case class Size()
+  /*case class Size()
 
   case class Content[F[_]](size: Size, frames: Stream[F, Frame[F]])
 
@@ -52,7 +51,7 @@ package object video {
 
   sealed trait Frame[F[_]]
 
-  sealed abstract class Video[F[_], Value]() {
+  sealed abstract class Video[F[_], Value](contentStream: Stream[F, Content[F]]) {
 
     // Video
     def analyze[NewValue](f: Video[F, Value] => Video[F, NewValue]): Video[F, NewValue]
@@ -91,7 +90,6 @@ package object video {
     def writeTo(filePath: Path): Video[F, Unit]
 
 
-
   }
 
   object Video {
@@ -126,6 +124,6 @@ package object video {
         .as(ExitCode.Success)
     }
 
-  }
+  }*/
 
 }

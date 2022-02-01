@@ -61,4 +61,9 @@ object Dependencies {
     "io.chrisdavenport" %% "log4cats-slf4j"
   ).map(_ % Versions.log4cats)
 
+  lazy val monocle = Seq(
+    "com.github.julien-truffaut" %% "monocle-core",
+    "com.github.julien-truffaut" %% "monocle-macro"
+  ).map(_ % Versions.monocle)
+
 }

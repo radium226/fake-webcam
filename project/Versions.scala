@@ -4,4 +4,6 @@ object Versions {
 
   val log4cats = "1.1.1"
 
+  val monocle = "2.0.3"
+
 }

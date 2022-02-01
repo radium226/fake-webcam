@@ -43,6 +43,9 @@ lazy val root = (project in file("."))
     // Circe
     libraryDependencies ++= Dependencies.circe,
 
+    // Monocle
+    libraryDependencies ++= Dependencies.monocle,
+
     // Eviction Fix
     dependencyOverrides ++= Dependencies.cats,
 
